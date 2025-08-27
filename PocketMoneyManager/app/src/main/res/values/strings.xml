@@ -1,0 +1,29 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="app_name">Pocket Money Manager</string>
+    <string name="home">Home</string>
+    <string name="transactions">Transactions</string>
+    <string name="goals">Goals</string>
+    <string name="profile">Profile</string>
+    <string name="add_transaction">Add Transaction</string>
+    <string name="current_balance">Current Balance</string>
+    <string name="quick_actions">Quick Actions</string>
+    <string name="weekly_budget">Weekly Budget</string>
+    <string name="active_goals">Active Goals</string>
+    <string name="savings_goals">Savings Goals</string>
+    <string name="badges_collection">Badges Collection</string>
+    <string name="settings">Settings</string>
+    <string name="dark_mode">Dark Mode</string>
+    <string name="notifications">Notifications</string>
+    <string name="amount">Amount</string>
+    <string name="category">Category</string>
+    <string name="description">Description</string>
+    <string name="expense">Expense</string>
+    <string name="income">Income</string>
+    <string name="add_expense">Add Expense 💸</string>
+    <string name="add_income">Add Income 💰</string>
+    <string name="budget_warning_title">💸 Your wallet is crying!</string>
+    <string name="budget_warning_message">You\'re spending too much this week. Slow down!</string>
+    <string name="streak_notification_title">🔥 You\'re on fire!</string>
+    <string name="streak_notification_message">You\'re on a %d-day savings streak, keep it up!</string>
+</resources>
