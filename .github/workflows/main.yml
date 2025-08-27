@@ -13,30 +13,41 @@ jobs:
     - name: Checkout code
       uses: actions/checkout@v4
     
-    - name: Setup Android Build Environment
-      uses: android-actions/setup-android@v3
-      with:
-        api-level: 34
-        target: default
-        arch: x86_64
-        
     - name: Set up JDK 17
       uses: actions/setup-java@v4
       with:
         java-version: '17'
         distribution: 'temurin'
         
-    - name: Build with Docker (Guaranteed to work)
+    - name: Setup Android SDK
+      uses: android-actions/setup-android@v3
+      
+    - name: Fix themes.xml
       run: |
-        docker run --rm \
-          -v ${{ github.workspace }}:/workspace \
-          -w /workspace/PocketMoneyManager \
-          cimg/android:2024.01.1 \
-          bash -c "
-            chmod +x gradlew
-            ./gradlew assembleDebug --no-daemon
-          "
+        cd PocketMoneyManager
+        cat > app/src/main/res/values/themes.xml << 'EOF'
+        <?xml version="1.0" encoding="utf-8"?>
+        <resources xmlns:tools="http://schemas.android.com/tools">
+            <style name="Theme.PocketMoneyManager" parent="Theme.Material3.DayNight">
+                <item name="colorPrimary">@color/neon_teal</item>
+                <item name="colorOnPrimary">@color/white</item>
+                <item name="colorSecondary">@color/coral_orange</item>
+                <item name="colorOnSecondary">@color/black</item>
+                <item name="android:statusBarColor" tools:targetApi="l">@android:color/transparent</item>
+            </style>
+        </resources>
+        EOF
         
+    - name: Grant execute permission
+      run: |
+        cd PocketMoneyManager
+        chmod +x gradlew
+        
+    - name: Build Debug APK
+      run: |
+        cd PocketMoneyManager
+        ./gradlew assembleDebug --no-daemon --stacktrace
+      
     - name: Upload APK
       uses: actions/upload-artifact@v4
       with:
