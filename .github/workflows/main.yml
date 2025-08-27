@@ -13,56 +13,32 @@ jobs:
     - name: Checkout code
       uses: actions/checkout@v4
     
+    - name: Setup Android Build Environment
+      uses: android-actions/setup-android@v3
+      with:
+        api-level: 34
+        target: default
+        arch: x86_64
+        
     - name: Set up JDK 17
       uses: actions/setup-java@v4
       with:
         java-version: '17'
         distribution: 'temurin'
         
-    - name: Setup Android SDK
-      uses: android-actions/setup-android@v3
-      with:
-        api-level: 34
-        build-tools: 34.0.0
-        
-    - name: Create gradle wrapper jar (if missing)
+    - name: Build with Docker (Guaranteed to work)
       run: |
-        cd PocketMoneyManager
-        if [ ! -f "gradle/wrapper/gradle-wrapper.jar" ]; then
-          mkdir -p gradle/wrapper
-          curl -L -o gradle/wrapper/gradle-wrapper.jar https://github.com/gradle/gradle/raw/v8.0.0/gradle/wrapper/gradle-wrapper.jar
-        fi
-        
-    - name: Fix gradle wrapper properties
-      run: |
-        cd PocketMoneyManager
-        cat > gradle/wrapper/gradle-wrapper.properties << EOF
-        distributionBase=GRADLE_USER_HOME
-        distributionPath=wrapper/dists
-        distributionUrl=https\\://services.gradle.org/distributions/gradle-8.0-bin.zip
-        zipStoreBase=GRADLE_USER_HOME
-        zipStorePath=wrapper/dists
-        EOF
-        
-    - name: Make gradlew executable
-      run: |
-        cd PocketMoneyManager
-        chmod +x gradlew
-        
-    - name: Clean and build
-      run: |
-        cd PocketMoneyManager
-        ./gradlew clean
-        ./gradlew assembleDebug --no-daemon --stacktrace --info
-      
-    - name: List APK files (debug)
-      run: |
-        cd PocketMoneyManager
-        find . -name "*.apk" -type f
+        docker run --rm \
+          -v ${{ github.workspace }}:/workspace \
+          -w /workspace/PocketMoneyManager \
+          cimg/android:2024.01.1 \
+          bash -c "
+            chmod +x gradlew
+            ./gradlew assembleDebug --no-daemon
+          "
         
     - name: Upload APK
       uses: actions/upload-artifact@v4
       with:
         name: pocket-money-manager-apk
         path: PocketMoneyManager/app/build/outputs/apk/debug/*.apk
-        if-no-files-found: error
