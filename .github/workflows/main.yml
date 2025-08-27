@@ -21,17 +21,15 @@ jobs:
     - name: Setup Android SDK
       uses: android-actions/setup-android@v3
       
-    - name: Make gradlew executable
-      run: chmod +x gradlew
-      
-    - name: Setup Gradle Wrapper
-      run: gradle wrapper --gradle-version=8.0
-        
     - name: Build Debug APK
-      run: ./gradlew assembleDebug --no-daemon
+      run: |
+        cd PocketMoneyManager
+        chmod +x gradlew
+        gradle wrapper --gradle-version=8.0
+        ./gradlew assembleDebug --no-daemon
       
     - name: Upload APK
       uses: actions/upload-artifact@v3
       with:
         name: pocket-money-manager-apk
-        path: app/build/outputs/apk/debug/app-debug.apk
+        path: PocketMoneyManager/app/build/outputs/apk/debug/app-debug.apk
